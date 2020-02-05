@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <typeinfo>
 
 class Component;
 class EntityManager;
