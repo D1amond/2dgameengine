@@ -10,7 +10,7 @@ SpriteComponent::SpriteComponent(std::string assetTextureId, int numFrames, int 
     this->isAnimated = true;
     this->numFrames = numFrames;
     this->animationSpeed = animationSpeed;
-    this->isFixed = false;
+    this->isFixed = isFixed;
     
     if (hasDirections) {
         Animation downAnimation = Animation(0, numFrames, animationSpeed);
@@ -62,8 +62,8 @@ void SpriteComponent::Update(float deltaTime) {
     }
     sourceRectangle.y = animationIndex * transform->height;
 
-    destinationRectangle.x = static_cast<int>(transform->position.x);
-    destinationRectangle.y = static_cast<int>(transform->position.y);
+    destinationRectangle.x = static_cast<int>(transform->position.x) - (isFixed ? 0 : Game::camera.x);
+    destinationRectangle.y = static_cast<int>(transform->position.y) - (isFixed ? 0 : Game::camera.y);
     destinationRectangle.w = transform->width * transform->scale;
     destinationRectangle.h = transform->height * transform->scale;
 }
