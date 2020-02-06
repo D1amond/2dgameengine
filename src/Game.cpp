@@ -1,10 +1,12 @@
 #include <iostream>
+#include <fstream>
 
 #include "./Constants.h"
 #include "./Game.h"
 #include "./AssetManager.h"
 #include "./Map.h"
 #include "../lib/glm/glm.hpp"
+#include "../lib/nlohman/json.hpp"
 
 #include "./Components/TransformComponent.h"
 #include "./Components/SpriteComponent.h"
@@ -68,6 +70,14 @@ void Game::LoadLevel(int levelNumber) {
     assetManager->AddTexture("chopper-image", std::string("./assets/images/chopper-spritesheet.png").c_str());
     assetManager->AddTexture("radar-image", std::string("./assets/images/radar.png").c_str());
     assetManager->AddTexture("jungle-tiletexture", std::string("./assets/tilemaps/jungle.png").c_str());
+
+    // TEST LOADING JSON
+    nlohmann::json json;
+    std::ifstream i("./assets/tilemaps/jungle.json");
+    i >> json;
+
+    std::cout << json["height"] << std::endl;
+    // END TEST
 
     map = new Map("jungle-tiletexture", 2, 32);
     map->LoadMap("./assets/tilemaps/jungle.map", 25, 20);
