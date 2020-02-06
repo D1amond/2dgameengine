@@ -5,6 +5,14 @@
          "height":30,
          "name":"base",
          "opacity":1,
+         "properties":
+            {
+             "layerid":0
+            },
+         "propertytypes":
+            {
+             "layerid":"int"
+            },
          "type":"tilelayer",
          "visible":true,
          "width":30,
