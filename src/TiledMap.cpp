@@ -79,12 +79,15 @@ void TiledMap::Load() {
                     y++;
                     x = 0;
                 }
-                auto& tileset = GetTilesetFromId(tileId);
-                //std::cout << "tile id " << tileId << " in tileset " << tileset.textureId << std::endl;
 
-                std::pair<int, int> sourceRect = tileset.TileIdToRectXY(tileId);
-                AddTile(sourceRect.first, sourceRect.second, x * (tileSize * scale), y * (tileSize * scale), tileset.textureId);
+                if (tileId > 0) {
+                    auto& tileset = GetTilesetFromId(tileId);
+                    //std::cout << "tile id " << tileId << " in tileset " << tileset.textureId << std::endl;
 
+                    std::pair<int, int> sourceRect = tileset.TileIdToRectXY(tileId);
+                    AddTile(sourceRect.first, sourceRect.second, x * (tileSize * scale), y * (tileSize * scale), tileset.textureId);
+                }
+                
                 x++;
                 processedTileCount++;
             }
