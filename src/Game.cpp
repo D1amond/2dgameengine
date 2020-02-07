@@ -5,6 +5,7 @@
 #include "./Game.h"
 #include "./AssetManager.h"
 #include "./Map.h"
+#include "./TiledMap.h"
 #include "../lib/glm/glm.hpp"
 #include "../lib/nlohman/json.hpp"
 
@@ -18,6 +19,7 @@ SDL_Renderer* Game::renderer;
 SDL_Event Game::event;
 SDL_Rect Game::camera = {0, 0, WINDOW_WIDTH, WINDOW_HEIGHT};
 Map* map;
+TiledMap* tiledMap;
 
 Game::Game() {
     isRunning = false;
@@ -71,13 +73,8 @@ void Game::LoadLevel(int levelNumber) {
     assetManager->AddTexture("radar-image", std::string("./assets/images/radar.png").c_str());
     assetManager->AddTexture("jungle-tiletexture", std::string("./assets/tilemaps/jungle.png").c_str());
 
-    // TEST LOADING JSON
-    nlohmann::json json;
-    std::ifstream i("./assets/tilemaps/jungle.json");
-    i >> json;
-
-    std::cout << json["height"] << std::endl;
-    // END TEST
+    /*tiledMap = new TiledMap("./assets/tilemaps/jungle.json", 2);
+    tiledMap->Load();*/
 
     map = new Map("jungle-tiletexture", 2, 32);
     map->LoadMap("./assets/tilemaps/jungle.map", 25, 20);

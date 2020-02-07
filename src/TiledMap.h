@@ -27,7 +27,7 @@ public:
     TiledMap(std::string filePath, int scale);
 
     void Load();
-    void AddTile(int sourceX, int sourceY, int x, int y);
+    void AddTile(int sourceX, int sourceY, int x, int y, std::string textureId);
 };
 
 #endif
