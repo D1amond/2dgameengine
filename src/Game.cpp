@@ -73,6 +73,7 @@ void Game::LoadLevel(int levelNumber) {
     assetManager->AddTexture("chopper-image", std::string("./assets/images/chopper-spritesheet.png").c_str());
     assetManager->AddTexture("radar-image", std::string("./assets/images/radar.png").c_str());
     assetManager->AddTexture("jungle-tiletexture", std::string("./assets/tilemaps/jungle.png").c_str());
+    assetManager->AddTexture("test-tiletexture", std::string("./assets/tilemaps/test.png").c_str());
 
     /*tiledMap = new TiledMap("./assets/tilemaps/jungle.json", 2);
     tiledMap->Load();*/
@@ -132,7 +133,7 @@ void Game::Update() {
 
 void Game::Render() {
     // set the background color
-    SDL_SetRenderDrawColor(renderer, 21, 21, 21, 255);
+    SDL_SetRenderDrawColor(renderer, 100, 100, 100, 255);
 
     // clear the back buffer
     SDL_RenderClear(renderer);

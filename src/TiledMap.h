@@ -23,11 +23,13 @@ private:
     int scale;
     int tileSize;
 
+    Tileset& GetTilesetFromId(int id);
+    void AddTile(int sourceX, int sourceY, int x, int y, std::string textureId);
+
 public:
     TiledMap(std::string filePath, int scale);
 
     void Load();
-    void AddTile(int sourceX, int sourceY, int x, int y, std::string textureId);
 };
 
 #endif
