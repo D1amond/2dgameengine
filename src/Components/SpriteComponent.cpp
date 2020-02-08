@@ -6,6 +6,12 @@ SpriteComponent::SpriteComponent(std::string assetTextureId) {
     SetTexture(assetTextureId);
 }
 
+SpriteComponent::SpriteComponent(std::string assetTextureId, bool isFixed) {
+    this->isAnimated = false;
+    this->isFixed = isFixed;
+    SetTexture(assetTextureId);
+}
+
 SpriteComponent::SpriteComponent(std::string assetTextureId, int numFrames, int animationSpeed, bool hasDirections, bool isFixed) {
     this->isAnimated = true;
     this->numFrames = numFrames;
