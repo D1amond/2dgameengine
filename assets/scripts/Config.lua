@@ -5,8 +5,11 @@ Config = {
         },
         Level2 = {
             file = "./assets/scripts/Level2.lua"
+        },
+        SimpleLevel = {
+            file = "./assets/scripts/SimpleLevel.lua"
         }
     },
 
-    startingLevel = "Level1"
+    startingLevel = "SimpleLevel"
 }

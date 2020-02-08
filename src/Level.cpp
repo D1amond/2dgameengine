@@ -61,21 +61,33 @@ void Level::Load() {
         assetIndex++;
     }
 
-    sol::table levelMap = data["map"];
-    std::string mapTextureId = levelMap["textureAssetId"];
-    std::string mapFile = levelMap["file"];
+    sol::optional<sol::table> existTiledMap = data["tiledMap"];
+    if (existTiledMap != sol::nullopt) {
+        sol::table tiledLevelMap = data["tiledMap"];
+        std::string tiledMapFile = tiledLevelMap["file"];
 
-    map = new Map(
-        mapTextureId,
-        static_cast<int>(levelMap["scale"]),
-        static_cast<int>(levelMap["tileSize"])
-    );
-    map->LoadMap(
-        mapFile,
-        static_cast<int>(levelMap["mapSizeX"]),
-        static_cast<int>(levelMap["mapSizeY"]),
-        this
-    );
+        tiledMap = new TiledMap(tiledMapFile, static_cast<int>(tiledLevelMap["scale"]));
+        tiledMap->Load(this);
+    }
+
+    sol::optional<sol::table> existMap = data["map"];
+    if (existMap != sol::nullopt) {
+        sol::table levelMap = data["map"];
+        std::string mapTextureId = levelMap["textureAssetId"];
+        std::string mapFile = levelMap["file"];
+
+        map = new Map(
+            mapTextureId,
+            static_cast<int>(levelMap["scale"]),
+            static_cast<int>(levelMap["tileSize"])
+        );
+        map->LoadMap(
+            mapFile,
+            static_cast<int>(levelMap["mapSizeX"]),
+            static_cast<int>(levelMap["mapSizeY"]),
+            this
+        );
+    }
 
     sol::table levelEntities = data["entities"];
     unsigned int entityIndex = 0;
