@@ -1,5 +1,5 @@
 build:
-	g++ -w -std=c++14 -Wfatal-errors \
+	g++ -w -std=c++17 -Wfatal-errors \
 	./src/*.cpp \
 	./src/Components/*.cpp \
 	-o game \

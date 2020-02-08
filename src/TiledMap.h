@@ -6,6 +6,8 @@
 
 #include "../lib/nlohman/json.hpp"
 
+class Level;
+
 class Tileset {
 public:
     std::string textureId;
@@ -24,12 +26,12 @@ private:
     int tileSize;
 
     Tileset& GetTilesetFromId(int id);
-    void AddTile(int sourceX, int sourceY, int x, int y, std::string textureId);
+    void AddTile(int sourceX, int sourceY, int x, int y, std::string textureId, Level* level);
 
 public:
     TiledMap(std::string filePath, int scale);
 
-    void Load();
+    void Load(Level* level);
 };
 
 #endif

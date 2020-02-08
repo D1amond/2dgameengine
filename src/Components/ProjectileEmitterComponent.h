@@ -15,7 +15,7 @@ private:
     bool loop;
 
 public:
-    ProjectileEmitterComponent(int speed, int angle, int range, bool loop);
+    ProjectileEmitterComponent(Entity* owner, int speed, int angle, int range, bool loop);
 
     void Initialize() override;
     void Update(float deltaTime) override;

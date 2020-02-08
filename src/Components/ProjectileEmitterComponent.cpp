@@ -1,6 +1,6 @@
 #include "./ProjectileEmitterComponent.h"
 
-ProjectileEmitterComponent::ProjectileEmitterComponent(int speed, int angle, int range, bool loop) {
+ProjectileEmitterComponent::ProjectileEmitterComponent(Entity* owner, int speed, int angle, int range, bool loop): Component(owner) {
     this->speed = speed;
     this->range = range;
     this->loop = loop;

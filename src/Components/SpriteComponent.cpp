@@ -1,18 +1,20 @@
 #include "./SpriteComponent.h"
 
-SpriteComponent::SpriteComponent(std::string assetTextureId) {
+#include <iostream>
+
+SpriteComponent::SpriteComponent(Entity* owner, std::string assetTextureId): Component(owner) {
     isAnimated = false;
     isFixed = false;
     SetTexture(assetTextureId);
 }
 
-SpriteComponent::SpriteComponent(std::string assetTextureId, bool isFixed) {
+SpriteComponent::SpriteComponent(Entity* owner, std::string assetTextureId, bool isFixed): Component(owner) {
     this->isAnimated = false;
     this->isFixed = isFixed;
     SetTexture(assetTextureId);
 }
 
-SpriteComponent::SpriteComponent(std::string assetTextureId, int numFrames, int animationSpeed, bool hasDirections, bool isFixed) {
+SpriteComponent::SpriteComponent(Entity* owner, std::string assetTextureId, int numFrames, int animationSpeed, bool hasDirections, bool isFixed): Component(owner) {
     this->isAnimated = true;
     this->numFrames = numFrames;
     this->animationSpeed = animationSpeed;
@@ -44,7 +46,10 @@ SpriteComponent::SpriteComponent(std::string assetTextureId, int numFrames, int 
 }
 
 void SpriteComponent::SetTexture(std::string assetTextureId) {
-    texture = Game::assetManager->GetTexture(assetTextureId);
+    /*std::cout << "SetTexture " << assetTextureId << std::endl;
+    std::cout << " owner: " << owner << std::endl;
+    std::cout << " owner level: " << owner->level->name << std::endl;*/
+    texture = owner->level->assetManager->GetTexture(assetTextureId);
 }
 
 void SpriteComponent::Play(std::string animationName) {
@@ -68,8 +73,8 @@ void SpriteComponent::Update(float deltaTime) {
     }
     sourceRectangle.y = animationIndex * transform->height;
 
-    destinationRectangle.x = static_cast<int>(transform->position.x) - (isFixed ? 0 : Game::camera.x);
-    destinationRectangle.y = static_cast<int>(transform->position.y) - (isFixed ? 0 : Game::camera.y);
+    destinationRectangle.x = static_cast<int>(transform->position.x) - (isFixed ? 0 : owner->level->camera.x);
+    destinationRectangle.y = static_cast<int>(transform->position.y) - (isFixed ? 0 : owner->level->camera.y);
     destinationRectangle.w = transform->width * transform->scale;
     destinationRectangle.h = transform->height * transform->scale;
 }

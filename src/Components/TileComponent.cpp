@@ -2,8 +2,8 @@
 
 #include "../AssetManager.h"
 
-TileComponent::TileComponent(int sourceRectX, int sourceRectY, int x, int y, int tileSize, int tileScale, std::string assetTextureId) {
-    texture = Game::assetManager->GetTexture(assetTextureId);
+TileComponent::TileComponent(Entity* owner, int sourceRectX, int sourceRectY, int x, int y, int tileSize, int tileScale, std::string assetTextureId): Component(owner) {
+    texture = owner->level->assetManager->GetTexture(assetTextureId);
 
     sourceRectangle.x = sourceRectX;
     sourceRectangle.y = sourceRectY;
@@ -28,8 +28,8 @@ void TileComponent::Initialize() {
 }
 
 void TileComponent::Update(float deltaTime) {
-    destinationRectangle.x = position.x - Game::camera.x;
-    destinationRectangle.y = position.y - Game::camera.y;
+    destinationRectangle.x = position.x - owner->level->camera.x;
+    destinationRectangle.y = position.y - owner->level->camera.y;
 }
 
 void TileComponent::Render() {

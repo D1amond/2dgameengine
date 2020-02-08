@@ -1,6 +1,7 @@
 #include "./EntityManager.h"
 
 #include "./Collision.h"
+#include "./Level.h"
 #include "./Components/ColliderComponent.h"
 
 void EntityManager::ClearData() {
@@ -28,10 +29,10 @@ void EntityManager::Render() {
     }
 }
 
-Entity& EntityManager::AddEntity(std::string entityName, LayerType layer) {
-    Entity *entity = new Entity(*this, entityName, layer);
+Entity* EntityManager::AddEntity(std::string entityName, LayerType layer, Level* level) {
+    Entity *entity = new Entity(*this, entityName, layer, level);
     entities.emplace_back(entity);
-    return *entity;
+    return entity;
 }
 
 std::vector<Entity*> EntityManager::GetEntities() const {

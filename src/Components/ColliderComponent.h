@@ -13,7 +13,7 @@ public:
     SDL_Rect destinationRectangle;
     TransformComponent* transform;
 
-    ColliderComponent(std::string colliderTag, int x, int y, int width, int height);
+    ColliderComponent(Entity* owner, std::string colliderTag, int x, int y, int width, int height);
 
     void Initialize() override;
     void Update(float deltaTime) override;

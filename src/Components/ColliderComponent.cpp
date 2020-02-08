@@ -1,6 +1,6 @@
 #include "./ColliderComponent.h"
 
-ColliderComponent::ColliderComponent(std::string colliderTag, int x, int y, int width, int height) {
+ColliderComponent::ColliderComponent(Entity* owner, std::string colliderTag, int x, int y, int width, int height): Component(owner) {
     this->colliderTag = colliderTag;
     this->collider = {x, y, width, height};
 }
@@ -17,8 +17,8 @@ void ColliderComponent::Update(float deltaTime) {
     collider.w = transform->width * transform->scale;
     collider.h = transform->height * transform->scale;
 
-    destinationRectangle.x = collider.x - Game::camera.x;
-    destinationRectangle.y = collider.y - Game::camera.y;
+    destinationRectangle.x = collider.x - owner->level->camera.x;
+    destinationRectangle.y = collider.y - owner->level->camera.y;
 }
 
 void ColliderComponent::Render() {

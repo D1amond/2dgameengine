@@ -14,7 +14,7 @@ public:
     int height;
     int scale;
 
-    TransformComponent(int posX, int posY, int velX, int velY, int w, int h, int s);
+    TransformComponent(Entity* owner, int posX, int posY, int velX, int velY, int w, int h, int s);
 
     void Initialize() override;
 

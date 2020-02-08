@@ -1,12 +1,14 @@
 #ifndef ENTITY_H
 #define ENTITY_H
 
+#include <iostream>
 #include <vector>
 #include <string>
 #include <map>
 #include <typeinfo>
 
 #include "./Constants.h"
+#include "./Level.h"
 
 class Component;
 class EntityManager;
@@ -22,9 +24,9 @@ private:
 public:
     std::string name;
     LayerType layer;
+    Level* level = NULL;
 
-    Entity(EntityManager& manager);
-    Entity(EntityManager& manager, std::string name, LayerType layer);
+    Entity(EntityManager& manager, std::string name, LayerType layer, Level* level);
 
     void Update(float deltaTime);
     void Render();
@@ -34,8 +36,6 @@ public:
     template<typename T, typename... TArgs>
     T& AddComponent(TArgs&&... args) {
         T* newComponent(new T(std::forward<TArgs>(args)...));
-
-        newComponent->owner = this;
         components.emplace_back(newComponent);
         componentTypeMap[&typeid(*newComponent)] = newComponent;
         newComponent->Initialize();

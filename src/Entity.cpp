@@ -2,11 +2,7 @@
 
 #include "./EntityManager.h"
 
-Entity::Entity(EntityManager& manager): manager(manager) {
-    isActive = true;
-}
-
-Entity::Entity(EntityManager& manager, std::string name, LayerType layer): manager(manager), name(name), layer(layer) {
+Entity::Entity(EntityManager& manager, std::string name, LayerType layer, Level* level): manager(manager), name(name), layer(layer), level(level) {
     isActive = true;
 }
 

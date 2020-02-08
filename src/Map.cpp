@@ -5,8 +5,7 @@
 #include "./Game.h"
 #include "./EntityManager.h"
 #include "./Components/TileComponent.h"
-
-extern EntityManager manager;
+#include "./Level.h"
 
 Map::Map(std::string textureId, int scale, int tileSize) {
     this->textureId = textureId;
@@ -14,7 +13,7 @@ Map::Map(std::string textureId, int scale, int tileSize) {
     this->tileSize = tileSize;
 }
 
-void Map::LoadMap(std::string filePath, int mapSizeX, int mapSizeY) {
+void Map::LoadMap(std::string filePath, int mapSizeX, int mapSizeY, Level* level) {
     std::fstream mapFile;
     mapFile.open(filePath);
 
@@ -26,7 +25,7 @@ void Map::LoadMap(std::string filePath, int mapSizeX, int mapSizeY) {
             mapFile.get(ch);
             int sourceRectX = atoi(&ch) * tileSize;
 
-            AddTile(sourceRectX, sourceRectY, x * (scale * tileSize), y * (scale * tileSize));
+            AddTile(sourceRectX, sourceRectY, x * (scale * tileSize), y * (scale * tileSize), level);
             mapFile.ignore();
         }
     }
@@ -34,7 +33,7 @@ void Map::LoadMap(std::string filePath, int mapSizeX, int mapSizeY) {
     mapFile.close();
 }
 
-void Map::AddTile(int sourceRectX, int sourceRectY, int x, int y) {
-    Entity& newTile(manager.AddEntity("Tile", LayerType::TILEMAP_LAYER));
-    newTile.AddComponent<TileComponent>(sourceRectX, sourceRectY, x, y, tileSize, scale, textureId);
+void Map::AddTile(int sourceRectX, int sourceRectY, int x, int y, Level* level) {
+    Entity* newTile(level->entityManager->AddEntity("Tile", LayerType::TILEMAP_LAYER, level));
+    newTile->AddComponent<TileComponent>(newTile, sourceRectX, sourceRectY, x, y, tileSize, scale, textureId);
 }

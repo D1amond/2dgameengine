@@ -7,9 +7,7 @@
 
 #include "../lib/lua/sol.hpp"
 
-#include "./EntityManager.h"
-
-class AssetManager;
+class LevelManager;
 
 class Game {
     private:
@@ -20,9 +18,8 @@ class Game {
         int ticksLastFrame;
 
         static SDL_Renderer *renderer;
-        static AssetManager* assetManager;
         static SDL_Event event;
-        static SDL_Rect camera;
+        LevelManager* levelManager;
 
         Game();
         ~Game();
@@ -33,8 +30,6 @@ class Game {
         void Update();
         void Render();
         void Destroy();
-        void HandleCameraMovement();
-        void CheckCollisions();
         void ProcessGameOver();
         void ProcessNextLevel(int levelNumber);
 };

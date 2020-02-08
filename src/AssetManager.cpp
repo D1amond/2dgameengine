@@ -1,5 +1,7 @@
 #include "./AssetManager.h"
 
+#include <iostream>
+
 AssetManager::AssetManager(EntityManager* manager): manager(manager) {
 
 }
@@ -14,6 +16,10 @@ void AssetManager::AddTexture(std::string textureId, const char* filePath) {
 }
 
 SDL_Texture* AssetManager::GetTexture(std::string textureId) {
+    /*std::cout << "GetTexture(" << textureId << ")" << std::endl;
+    for (auto& texture: textures) {
+        std::cout << texture.first << std::endl;
+    }*/
     return textures[textureId];
 }
 

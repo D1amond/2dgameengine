@@ -2,7 +2,7 @@
 
 #include "../Game.h"
 
-TransformComponent::TransformComponent(int posX, int posY, int velX, int velY, int w, int h, int s) {
+TransformComponent::TransformComponent(Entity* owner, int posX, int posY, int velX, int velY, int w, int h, int s): Component(owner) {
     position = glm::vec2(posX, posY);
     velocity = glm::vec2(velX, velY);
     width = w;

@@ -14,7 +14,7 @@ public:
     SDL_Rect destinationRectangle;
     glm::vec2 position;
 
-    TileComponent(int sourceRectX, int sourceRectY, int x, int y, int tileSize, int tileScale, std::string assetTextureId);
+    TileComponent(Entity* owner, int sourceRectX, int sourceRectY, int x, int y, int tileSize, int tileScale, std::string assetTextureId);
     ~TileComponent();
 
     void Initialize() override;

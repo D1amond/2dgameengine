@@ -16,7 +16,7 @@ private:
     SDL_Texture* texture;
 
 public:
-    TextLabelComponent(int x, int y, std::string text, std::string fontFamily, const SDL_Color color);
+    TextLabelComponent(Entity* owner, int x, int y, std::string text, std::string fontFamily, const SDL_Color color);
 
     void SetLabelText();
 

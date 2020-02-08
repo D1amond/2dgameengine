@@ -7,8 +7,6 @@
 #include "./EntityManager.h"
 #include "./Components/TileComponent.h"
 
-extern EntityManager manager;
-
 Tileset::Tileset(std::string textureId, nlohmann::json& json): textureId(textureId), json(json) {}
 
 /**
@@ -58,7 +56,7 @@ TiledMap::TiledMap(std::string filePath, int scale) {
     this->tileSize = json["tileheight"];
 }
 
-void TiledMap::Load() {
+void TiledMap::Load(Level* level) {
     // Get tilesets
     int id = 0;
     for (auto& jsonTileset: json["tilesets"]) {
@@ -85,7 +83,7 @@ void TiledMap::Load() {
                     //std::cout << "tile id " << tileId << " in tileset " << tileset.textureId << std::endl;
 
                     std::pair<int, int> sourceRect = tileset.TileIdToRectXY(tileId);
-                    AddTile(sourceRect.first, sourceRect.second, x * (tileSize * scale), y * (tileSize * scale), tileset.textureId);
+                    AddTile(sourceRect.first, sourceRect.second, x * (tileSize * scale), y * (tileSize * scale), tileset.textureId, level);
                 }
                 
                 x++;
@@ -95,8 +93,8 @@ void TiledMap::Load() {
     }
 }
 
-void TiledMap::AddTile(int sourceRectX, int sourceRectY, int x, int y, std::string textureId) {
+void TiledMap::AddTile(int sourceRectX, int sourceRectY, int x, int y, std::string textureId, Level* level) {
     //std::cout << "source = (" << sourceRectX << "," << sourceRectY << "), coord = (" << x << "," << y << "), texture = " << textureId << std::endl;
-    Entity& newTile(manager.AddEntity("Tile", LayerType::TILEMAP_LAYER));
-    newTile.AddComponent<TileComponent>(sourceRectX, sourceRectY, x, y, tileSize, scale, textureId);
+    Entity* newTile(level->entityManager->AddEntity("Tile", LayerType::TILEMAP_LAYER, level));
+    newTile->AddComponent<TileComponent>(newTile, sourceRectX, sourceRectY, x, y, tileSize, scale, textureId);
 }

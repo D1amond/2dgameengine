@@ -26,9 +26,9 @@ private:
 public:
     SDL_RendererFlip spriteFlip = SDL_FLIP_NONE;
 
-    SpriteComponent(std::string assetTextureId);
-    SpriteComponent(std::string assetTextureId, bool isFixed);
-    SpriteComponent(std::string assetTextureId, int numFrames, int animationSpeed, bool hasDirections, bool isFixed);
+    SpriteComponent(Entity* owner, std::string assetTextureId);
+    SpriteComponent(Entity* owner, std::string assetTextureId, bool isFixed);
+    SpriteComponent(Entity* owner, std::string assetTextureId, int numFrames, int animationSpeed, bool hasDirections, bool isFixed);
     void SetTexture(std::string assetTextureId);
     void Play(std::string animationName);
     void Initialize() override;

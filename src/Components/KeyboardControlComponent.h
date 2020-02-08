@@ -17,8 +17,7 @@ public:
     TransformComponent *transform;
     SpriteComponent *sprite;
 
-    KeyboardControlComponent();
-    KeyboardControlComponent(std::string upKey, std::string rightKey, std::string downKey, std::string leftKey, std::string shootKey);
+    KeyboardControlComponent(Entity* owner, std::string upKey, std::string rightKey, std::string downKey, std::string leftKey, std::string shootKey);
 
     std::string GetSDLKeyStringCode(std::string key);
 
