@@ -13,6 +13,8 @@
 #include "./Components/TransformComponent.h"
 #include "./Components/SpriteComponent.h"
 #include "./Components/KeyboardControlComponent.h"
+#include "./Components/TextLabelComponent.h"
+#include "./Components/ProjectileEmitterComponent.h"
 
 EntityManager manager;
 AssetManager* Game::assetManager = new AssetManager(&manager);
@@ -37,6 +39,10 @@ void Game::Initialize(int width, int height) {
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
         std::cerr << "Error initializing SDL." << std::endl;
         return;
+    }
+
+    if (TTF_Init() != 0) {
+        std::cerr << "Error initializing SDL TTF." << std::endl;
     }
 
     window = SDL_CreateWindow(
@@ -74,6 +80,10 @@ void Game::LoadLevel(int levelNumber) {
     assetManager->AddTexture("radar-image", std::string("./assets/images/radar.png").c_str());
     assetManager->AddTexture("jungle-tiletexture", std::string("./assets/tilemaps/jungle.png").c_str());
     assetManager->AddTexture("test-tiletexture", std::string("./assets/tilemaps/test.png").c_str());
+    assetManager->AddTexture("projectile-image", std::string("./assets/images/bullet-enemy.png").c_str());
+    assetManager->AddTexture("heliport-image", std::string("./assets/images/heliport.png").c_str());
+
+    assetManager->AddFont("charriot-font", std::string("./assets/fonts/charriot.ttf").c_str(), 14);
 
     /*tiledMap = new TiledMap("./assets/tilemaps/jungle.json", 2);
     tiledMap->Load();*/
@@ -84,16 +94,30 @@ void Game::LoadLevel(int levelNumber) {
     player.AddComponent<TransformComponent>(240, 106, 0, 0, 32, 32, 1);
     player.AddComponent<SpriteComponent>("chopper-image", 2, 90, true, false);
     player.AddComponent<KeyboardControlComponent>("up", "right", "down", "left", "space");
-    player.AddComponent<ColliderComponent>("player", 240, 106, 32, 32);
+    player.AddComponent<ColliderComponent>("PLAYER", 240, 106, 32, 32);
 
     Entity& tankEntity(manager.AddEntity("tank", LayerType::ENEMIES_LAYER));
     tankEntity.AddComponent<TransformComponent>(150, 495, 5, 0, 32, 32, 1);
     tankEntity.AddComponent<SpriteComponent>("tank-image");
-    tankEntity.AddComponent<ColliderComponent>("enemy", 150, 495, 32, 32);
+    tankEntity.AddComponent<ColliderComponent>("ENEMY", 150, 495, 32, 32);
+
+    Entity& projectileEntity(manager.AddEntity("projectile", LayerType::PROJECTILE_LAYER));
+    projectileEntity.AddComponent<TransformComponent>(150+16, 495+16, 0, 0, 4, 4, 1);
+    projectileEntity.AddComponent<SpriteComponent>("projectile-image");
+    projectileEntity.AddComponent<ColliderComponent>("PROJECTILE", 150+16, 495+16, 4, 4);
+    projectileEntity.AddComponent<ProjectileEmitterComponent>(50, 270, 200, true);
+
+    Entity& heliportEntity(manager.AddEntity("heliport", LayerType::OBSTACLES_LAYER));
+    heliportEntity.AddComponent<TransformComponent>(470, 420, 0, 0, 32, 32, 1);
+    heliportEntity.AddComponent<SpriteComponent>("heliport-image");
+    heliportEntity.AddComponent<ColliderComponent>("LEVEL_COMPLETE", 470, 420, 32, 32);
 
     Entity& radarEntity(manager.AddEntity("radar", LayerType::UI_LAYER));
     radarEntity.AddComponent<TransformComponent>(720, 15, 0, 0, 64, 64, 1);
     radarEntity.AddComponent<SpriteComponent>("radar-image", 8, 150, false, true);
+
+    Entity& labelLevelName(manager.AddEntity("LabelLevelName", LayerType::UI_LAYER));
+    labelLevelName.AddComponent<TextLabelComponent>(10, 10, "First Level...", "charriot-font", WHITE_COLOR);
 }
 
 void Game::ProcessInput() {
@@ -167,8 +191,29 @@ void Game::HandleCameraMovement() {
 }
 
 void Game::CheckCollisions() {
-    std::string collisionTagType = manager.CheckEntityCollisions(player);
+    /*std::string collisionTagType = manager.CheckEntityCollisions(player);
     if (collisionTagType.compare("enemy") == 0) {
         isRunning = false;
+    }*/
+
+    CollisionType collisionType = manager.CheckCollisions();
+    if (collisionType == CollisionType::PLAYER_ENEMY_COLLISION) {
+        ProcessGameOver();
     }
+    if (collisionType == CollisionType::PLAYER_PROJECTILE_COLLISION) {
+        ProcessGameOver();
+    }
+    if (collisionType == CollisionType::PLAYER_LEVEL_COMPLETE_COLLISION) {
+        ProcessNextLevel(1);
+    }
+}
+
+void Game::ProcessGameOver() {
+    std::cout << "Game Over" << std::endl;
+    isRunning = false;
+}
+
+void Game::ProcessNextLevel(int levelNumber) {
+    std::cout << "Next Level" << std::endl;
+    isRunning = false;
 }
