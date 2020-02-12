@@ -4,6 +4,10 @@
 #include <string>
 #include <map>
 #include <vector>
+#include <algorithm>
+#include <cmath>
+#include <numeric>
+#include <utility>
 
 #include <SDL2/SDL.h>
 #include "../../lib/nlohman/json.hpp"
@@ -11,33 +15,130 @@
 #include "../Component.h"
 
 class Entity;
+class TransformComponent;
 
 class AsepriteFrame {
 public:
-    nlohmann::json json;
+    int id = 0;
+    int x = 0;
+    int y = 0;
+    int w = 0;
+    int h = 0;
+    float duration = 0.0f;
 
-    AsepriteFrame(nlohmann::json json): json(json) {}
+    AsepriteFrame(int id, nlohmann::json json) {
+        this->id = id;
+        x = json["frame"]["x"];
+        y = json["frame"]["y"];
+        w = json["frame"]["w"];
+        h = json["frame"]["h"];
+        int sourceDuration = json["duration"];
+        duration = static_cast<float>(sourceDuration) / 1000;
+    }
 };
 
 class AsepriteAnimation {
 private:
     std::vector<AsepriteFrame> frames;
 
-public:
-    nlohmann::json json;
+    float getDurationToFrame(float time) const {
+        float totalDuration = 0.0f;
+        for (auto& frame : frames) {
+            if (totalDuration + frame.duration <= time) {
+                totalDuration += frame.duration;
+            } else {
+                break;
+            }
+        }
+        return totalDuration;
+    }
 
-    AsepriteAnimation(nlohmann::json json): json(json) {}
+    std::pair<AsepriteFrame, AsepriteFrame> clamp(float time) {
+        auto&& value = std::find_if(frames.begin(), frames.end(), [&, totalDuration = 0.0](auto&& keyframe) mutable {
+            totalDuration += keyframe.duration;
+            return time < totalDuration;
+        });
+        
+        if (value >= frames.end() - 1) {
+            return {frames.back(), frames.back()};
+        }
+        
+        auto value2 = value;
+        value2++;
+        return {*value, *value2};
+    }
+
+    std::pair<AsepriteFrame, AsepriteFrame> repeat(float time) {
+        float animationDuration = std::accumulate(frames.begin(), frames.end(), 0.0, [](auto&& total, auto&& keyframe){
+            return total + keyframe.duration;
+        });
+        
+        float ajustedTime = std::fmod(time, animationDuration);
+        
+        auto&& value = std::find_if(frames.begin(), frames.end(), [&, totalDuration = 0.0](auto&& keyframe) mutable {
+            totalDuration += keyframe.duration;
+            return ajustedTime < totalDuration;
+        });
+        
+        if (value >= frames.end() - 1) {
+            return {frames.back(), frames.front()};
+        }
+        
+        auto value2 = value;
+        value2++;
+        return {*value, *value2};
+    }
+
+    int nearest(float time, AsepriteFrame first, AsepriteFrame second) {
+        if (time >= first.duration) {
+            return second.id;
+        }
+        return first.id;
+    }
+
+public:
+    std::string name;
+    int from = 0;
+    int to = 0;
+    float cursor = 0.0f;
+    bool loop = true;
+
+    AsepriteAnimation(nlohmann::json json) {
+        name = json["name"];
+        from = json["from"];
+        to = json["to"];
+    }
 
     void AddFrame(AsepriteFrame frame) {
         frames.emplace_back(frame);
+    }
+
+    void Play() {
+
+    }
+
+    void Stop() {
+
+    }
+
+    void Reset() {
+
+    }
+
+    void Update(float deltaTime) {
+
     }
 };
 
 class AsepriteSpriteComponent: public Component {
 private:
+    TransformComponent* transform;
     SDL_Texture* texture;
+    SDL_Rect sourceRectangle;
+    SDL_Rect destinationRectangle;
     nlohmann::json json;
     std::map<std::string, AsepriteAnimation> animations;
+    std::string selectedTag;
 
 public:
     AsepriteSpriteComponent(Entity* owner, std::string filePath, std::string assetTextureId);

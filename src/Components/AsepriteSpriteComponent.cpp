@@ -5,6 +5,8 @@
 #include "../Entity.h"
 #include "../AssetManager.h"
 
+#include "./TransformComponent.h"
+
 AsepriteSpriteComponent::AsepriteSpriteComponent(Entity* owner, std::string filePath, std::string assetTextureId): Component(owner) {
     std::ifstream i(filePath);
     i >> json;
@@ -14,7 +16,7 @@ AsepriteSpriteComponent::AsepriteSpriteComponent(Entity* owner, std::string file
 }
 
 void AsepriteSpriteComponent::Play(std::string tag) {
-
+    selectedTag = tag;
 }
 
 void AsepriteSpriteComponent::Initialize() {
@@ -26,6 +28,12 @@ void AsepriteSpriteComponent::Initialize() {
         }
         animations.emplace(jsonAnimation["name"], animation);
     }
+
+    transform = owner->GetComponent<TransformComponent>();
+    sourceRectangle.x = 0;
+    sourceRectangle.y = 0;
+    sourceRectangle.w = transform->width;
+    sourceRectangle.h = transform->height;
 }
 
 void AsepriteSpriteComponent::Update(float deltaTime) {
