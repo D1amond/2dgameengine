@@ -9,6 +9,8 @@
 #include <numeric>
 #include <utility>
 
+#include <iostream>
+
 #include <SDL2/SDL.h>
 #include "../../lib/nlohman/json.hpp"
 

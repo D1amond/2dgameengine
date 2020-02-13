@@ -26,7 +26,6 @@ AsepriteSpriteComponent::AsepriteSpriteComponent(Entity* owner, std::string file
 }
 
 void AsepriteSpriteComponent::Play(std::string tag) {
-
     selectedTag = tag;
 }
 
@@ -51,12 +50,13 @@ void AsepriteSpriteComponent::Initialize() {
 }
 
 void AsepriteSpriteComponent::Update(float deltaTime) {
-    animations[selectedTag].Update(deltaTime);
+    auto& animation = animations.at(selectedTag);
+    animation.Update(deltaTime);
 
-    sourceRectangle.x = animations[selectedTag].currentFrame.x;
-    sourceRectangle.y = animations[selectedTag].currentFrame.y;
-    sourceRectangle.w = animations[selectedTag].currentFrame.w;
-    sourceRectangle.h = animations[selectedTag].currentFrame.h;
+    sourceRectangle.x = animation.currentFrame.x;
+    sourceRectangle.y = animation.currentFrame.y;
+    sourceRectangle.w = animation.currentFrame.w;
+    sourceRectangle.h = animation.currentFrame.h;
 
     destinationRectangle.x = static_cast<int>(transform->position.x) - (fixed ? 0 : owner->level->camera.x);
     destinationRectangle.y = static_cast<int>(transform->position.y) - (fixed ? 0 : owner->level->camera.y);
@@ -65,5 +65,5 @@ void AsepriteSpriteComponent::Update(float deltaTime) {
 }
 
 void AsepriteSpriteComponent::Render() {
-    TextureManager::Draw(texture, sourceRectangle, destinationRectangle, animations[selectedTag].flip);
+    TextureManager::Draw(texture, sourceRectangle, destinationRectangle,  animations.at(selectedTag).flip);
 }

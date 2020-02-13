@@ -12,6 +12,7 @@
 #include "./Components/ColliderComponent.h"
 #include "./Components/TransformComponent.h"
 #include "./Components/SpriteComponent.h"
+#include "./Components/AsepriteSpriteComponent.h"
 #include "./Components/KeyboardControlComponent.h"
 #include "./Components/TextLabelComponent.h"
 #include "./Components/ProjectileEmitterComponent.h"
@@ -137,6 +138,14 @@ void Level::Load() {
                 } else {
                     newEntity->AddComponent<SpriteComponent>(newEntity, textureId, false);
                 }
+            }
+
+            // Add asepriteSprite component
+            sol::optional<sol::table> existsAsepriteSpriteComponent = entity["components"]["asepriteSprite"];
+            if (existsAsepriteSpriteComponent != sol::nullopt) {
+                std::string file = entity["components"]["asepriteSprite"]["file"];
+                std::string textureId = entity["components"]["asepriteSprite"]["textureAssetId"];
+                newEntity->AddComponent<AsepriteSpriteComponent>(newEntity, file, textureId, static_cast<bool>(entity["components"]["asepriteSprite"]["fixed"]));
             }
 
             // Add input control component
