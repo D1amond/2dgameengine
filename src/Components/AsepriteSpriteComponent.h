@@ -25,6 +25,9 @@ public:
     int w = 0;
     int h = 0;
     float duration = 0.0f;
+    bool empty = true;
+
+    AsepriteFrame() {}
 
     AsepriteFrame(int id, nlohmann::json json) {
         this->id = id;
@@ -34,6 +37,7 @@ public:
         h = json["frame"]["h"];
         int sourceDuration = json["duration"];
         duration = static_cast<float>(sourceDuration) / 1000;
+        empty = false;
     }
 };
 
@@ -89,11 +93,11 @@ private:
         return {*value, *value2};
     }
 
-    int nearest(float time, AsepriteFrame first, AsepriteFrame second) {
+    AsepriteFrame nearest(float time, AsepriteFrame first, AsepriteFrame second) {
         if (time >= first.duration) {
-            return second.id;
+            return second;
         }
-        return first.id;
+        return first;
     }
 
 public:
@@ -102,6 +106,10 @@ public:
     int to = 0;
     float cursor = 0.0f;
     bool loop = true;
+    float totalDuration = 0.0f;
+    AsepriteFrame currentFrame;
+    AsepriteFrame currentFrameInitial;
+    SDL_RendererFlip flip = SDL_FLIP_NONE;
 
     AsepriteAnimation(nlohmann::json json) {
         name = json["name"];
@@ -111,22 +119,23 @@ public:
 
     void AddFrame(AsepriteFrame frame) {
         frames.emplace_back(frame);
-    }
-
-    void Play() {
-
-    }
-
-    void Stop() {
-
+        totalDuration += frame.duration;
+        if (currentFrame.empty) {
+            currentFrame = frame;
+            currentFrameInitial = frame;
+        }
     }
 
     void Reset() {
-
+        currentFrame = currentFrameInitial;
+        cursor = 0.0f;
     }
 
     void Update(float deltaTime) {
-
+        cursor += deltaTime;
+        auto value = repeat(cursor);
+        auto _cursor = std::fmod(cursor, totalDuration);
+        currentFrame = nearest(_cursor - getDurationToFrame(_cursor), value.first, value.second);
     }
 };
 
@@ -138,10 +147,12 @@ private:
     SDL_Rect destinationRectangle;
     nlohmann::json json;
     std::map<std::string, AsepriteAnimation> animations;
-    std::string selectedTag;
+    std::string selectedTag = "";
+    bool fixed = false;
 
 public:
     AsepriteSpriteComponent(Entity* owner, std::string filePath, std::string assetTextureId);
+    AsepriteSpriteComponent(Entity* owner, std::string filePath, std::string assetTextureId, bool fixed);
 
     void Play(std::string tag);
 
